@@ -121,6 +121,94 @@ struct AnimationImport
 	INode* CreateGeoMesh(const vector<Vector3>& verts, const vector<Triangle>& tris, Matrix3& tm, INode *parent);
 };
 
+void NifImporter::FindBoneNode( AnimationImport& ai, INode* pNode, const std::map< std::wstring, NiKeyframeControllerRef >& animNodes )
+{
+	const std::wstring nodeName = pNode->GetName();
+	const std::map< std::wstring, NiKeyframeControllerRef >::const_iterator it = animNodes.find( nodeName );
+	if( it != animNodes.end() )
+	{
+		const NiKeyframeDataRef keyframeData = it->second->GetData();
+		if( keyframeData )
+		{
+			ai.AddValues( pNode->GetTMController(), keyframeData, 0.0f );
+		}
+		else
+		{
+			pNode->GetName();
+		}
+	}
+
+	for( int i = 0u; i < pNode->NumberOfChildren(); ++i )
+	{
+		INode* pChildNode = pNode->GetChildNode( i );
+		FindBoneNode( ai, pChildNode, animNodes );
+	}
+}
+
+bool NifImporter::ImportAnimationBones( AnimationImport& ai )
+{
+	const char* animnodePath = "E:\\Development\\daoc_nif_anim\\animnode.dat";
+
+	std::map< size_t, std::wstring > animNodeIndices;
+	{
+		std::wifstream file( animnodePath, ifstream::in );
+
+		std::wstring line;
+		while( std::getline( file, line ) )
+		{
+			const size_t index = animNodeIndices.size();
+			animNodeIndices[ index ] = line;
+		}
+	}
+
+	INode* pRootNode = FindNode(root);
+	if( pRootNode == nullptr )
+	{
+		return false;
+	}
+
+	NiAVObjectRef rootAV = DynamicCast<NiAVObject>( root );
+	if( !rootAV )
+	{
+		return false;
+	}
+
+	std::list< NiExtraDataRef > extraDatas = rootAV->GetExtraData();
+	std::list< NiTimeControllerRef > controllers = rootAV->GetControllers();
+	if( extraDatas.size() != controllers.size() )
+	{
+		return false;
+	}
+
+	std::map< std::wstring, NiKeyframeControllerRef > animNodes;
+
+	std::list< NiExtraDataRef >::iterator extraDataIterator = extraDatas.begin();
+	std::list< NiTimeControllerRef >::iterator controllerIterator = controllers.begin();
+	for( ; extraDataIterator != extraDatas.end() && controllerIterator != controllers.end(); ++extraDataIterator, ++controllerIterator )
+	{
+		const NiStringExtraDataRef extraData = DynamicCast< NiStringExtraData >( *extraDataIterator );
+		if( !extraData )
+		{
+			continue;
+		}
+
+		const size_t index = (size_t)std::stoi( extraData->GetData() );
+		const std::map< size_t, std::wstring >::const_iterator it = animNodeIndices.find( index );
+		if( it != animNodeIndices.end() )
+		{
+			const NiKeyframeControllerRef keyframeController = DynamicCast< NiKeyframeController >( *controllerIterator );
+			if( !keyframeController )
+			{
+				continue;
+			}
+
+			animNodes[ it->second ] = keyframeController;
+		}
+	}
+
+	FindBoneNode( ai, pRootNode, animNodes );
+}
+
 bool NifImporter::ImportAnimation()
 {
 	if (!enableAnimations)
@@ -130,6 +218,12 @@ bool NifImporter::ImportAnimation()
 		return false;
 
 	AnimationImport ai(*this);
+
+	if( !ImportAnimationBones( ai ) )
+	{
+		return false;
+	}
+
 	vector<NiObjectNETRef> roots;
 	roots.push_back(root);
 	return ai.AddValues(roots);
@@ -1531,7 +1625,7 @@ bool NifImporter::ImportMaterialAnimation( int paramBlockID, int subAnimID, Nifl
 			MergeKeys<IBezFloatKey, FloatKey>( tmpCtrl, keys, 0.0f );
 			TSTR str = mtl->SubAnim( paramBlockID )->SubAnimName( subAnimID );
 			mtl->SubAnim( paramBlockID )->AssignController( tmpCtrl, subAnimID );
-			
+
 			return true;
 		}
 	}

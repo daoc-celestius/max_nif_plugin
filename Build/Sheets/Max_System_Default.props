@@ -5,7 +5,7 @@
   <PropertyGroup Label="UserMacros">
     <MaxPluginDir>$(MaxInstallDir)plugins\</MaxPluginDir>
     <MaxPlugcfgDir>$(MaxInstallDir)plugcfg\</MaxPlugcfgDir>
-    <MaxSDKDir>$(MaxInstallDir)maxsdk\</MaxSDKDir>
+    <MaxSDKDir>$(ADSK_3DSMAX_SDK_2016)\</MaxSDKDir>
   </PropertyGroup>
   <PropertyGroup>
     <_ProjectFileVersion>14.0.23107.0</_ProjectFileVersion>

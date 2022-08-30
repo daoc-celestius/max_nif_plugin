@@ -18,7 +18,7 @@ HISTORY:
 #include "IniSection.h"
 #include <obj/NiParticleSystem.h>
 #include <obj/NiPSysGravityModifier.h>
-#include <obj/NiTimeController.h>
+#include <obj/NiKeyframeController.h>
 #include <AnimKey.h>
 #include <obj/BSTriShape.h>
 #include "../NifProps/iNifProps.h"
@@ -27,6 +27,8 @@ namespace Niflib
 {
 	class NiTextKeyExtraData;
 }
+
+class AnimationImport;
 
 // NIF Importer
 class NifImporter : public BaseImporter, IFileResolver//, public IniFileSection
@@ -202,6 +204,8 @@ public:
 
 	// Animation Helpers
 	bool ImportAnimation();
+	void FindBoneNode( AnimationImport& ai, INode* pNode, const std::map< std::wstring, NiKeyframeControllerRef >& animNodes );
+	bool ImportAnimationBones( AnimationImport& ai );
 	void ClearAnimation();
 	void ClearAnimation(INode *node);
 	bool AddNoteTracks(float time, string name, string target, Ref<NiTextKeyExtraData> textKeyData, bool loop);
