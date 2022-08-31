@@ -49,7 +49,7 @@
 #  include <cs/BipedApi.h>
 #endif
 #include <plugapi.h>
-#include <triobj.h> 
+#include <triobj.h>
 #include <bitmap.h>
 #include <modstack.h>
 #include <iskin.h>

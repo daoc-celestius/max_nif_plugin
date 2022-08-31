@@ -6,7 +6,7 @@
 
 	CREATED BY: tazpn (Theo)
 
-	HISTORY: 
+	HISTORY:
 
  *>	Copyright (c) 2006, All Rights Reserved.
  **********************************************************************/
@@ -60,7 +60,7 @@ static int nClasses = 0;
 static ClassDesc2* classDescriptions[30];
 static bool classDescEnabled[CD_Count];
 
-// This function is called by Windows when the DLL is loaded.  This 
+// This function is called by Windows when the DLL is loaded.  This
 // function may also be called many times during time critical operations
 // like rendering.  Therefore developers need to be careful what they
 // do inside this function.  In the code below, note how after the DLL is
@@ -76,8 +76,8 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL,ULONG fdwReason,LPVOID lpvReserved)
 		InitCustomControls(hInstance);	// Initialize MAX's custom controls
 #endif
 		InitCommonControls();			// Initialize Win95 controls
-		RegisterNotification(DoNotifyNodeHide, nullptr, NOTIFY_NODE_HIDE); 
-		RegisterNotification(DoNotifyNodeUnHide, nullptr, NOTIFY_NODE_UNHIDE); 
+		RegisterNotification(DoNotifyNodeHide, nullptr, NOTIFY_NODE_HIDE);
+		RegisterNotification(DoNotifyNodeUnHide, nullptr, NOTIFY_NODE_UNHIDE);
 	}
 	if (fdwReason == DLL_PROCESS_ATTACH)
 		InitializeLibSettings();
@@ -113,9 +113,9 @@ void InitializeLibSettings()
       classDescriptions[nClasses++] = GetBSDSModifierDesc();
       classDescriptions[nClasses++] = GetNifShaderDesc();
 	  classDescriptions[nClasses++] = GetBSSIModifierDesc();
-	  classDescriptions[nClasses++] = GetFO4ShaderDesc();	  
+	  classDescriptions[nClasses++] = GetFO4ShaderDesc();
 	  classDescriptions[nClasses++] = GetBGSMFileClassDesc();
-	  classDescriptions[nClasses++] = GetBGEMFileClassDesc();	  
+	  classDescriptions[nClasses++] = GetBGEMFileClassDesc();
    }
    if ( GetIniValue<bool>(TEXT("NifFurniture"), TEXT("Enable"), true, iniName) ) {
       classDescEnabled[CD_Furniture] = true;
@@ -179,7 +179,7 @@ __declspec( dllexport ) int LibNumberClasses()
    // Has conflict exit now.
    if (foundOlderReleaseConflict > 0) {
       return 0;
-   } else if ( foundOlderReleaseConflict < 0 ) { 
+   } else if ( foundOlderReleaseConflict < 0 ) {
       foundOlderReleaseConflict = 0;
 
       // Check for older releases
@@ -245,7 +245,7 @@ TCHAR *GetString(int id)
 	return nullptr;
 }
 
-// This function returns a pre-defined constant indicating the version of 
+// This function returns a pre-defined constant indicating the version of
 // the system under which it was compiled.  It is used to allow the system
 // to catch obsolete DLLs.
 __declspec( dllexport ) ULONG LibVersion()
@@ -260,7 +260,7 @@ static void DoNotifyNodeHide(void *param, NotifyInfo *info)
 	if (Object* obj = node->GetObjectRef())
 	{
 		// Look for messages in network\Max.log
-		// MAXScript_interface->Log()->LogEntry(SYSLOG_DEBUG, NO_DIALOG, "NifTools Max Plugin", 
+		// MAXScript_interface->Log()->LogEntry(SYSLOG_DEBUG, NO_DIALOG, "NifTools Max Plugin",
 		// 	"Entered DoNotifyNodeHide; node is -%s- and class ID is %ld\n", node->GetName(), obj->ClassID().PartA());
 
 	   if (obj->ClassID() == BHKLISTOBJECT_CLASS_ID)
@@ -271,7 +271,7 @@ static void DoNotifyNodeHide(void *param, NotifyInfo *info)
 		   for (int i = 0;i < pblock2->Count(PB_MESHLIST); i++)
 		   {
 			   INode *tnode = nullptr;
-			   pblock2->GetValue(PB_MESHLIST,0,tnode,FOREVER,i);	
+			   pblock2->GetValue(PB_MESHLIST,0,tnode,FOREVER,i);
 			   if (tnode != nullptr)
 			   {
 				   tnode->Hide(TRUE);
@@ -288,7 +288,7 @@ static void DoNotifyNodeUnHide(void *param, NotifyInfo *info)
 	if (Object* obj = node->GetObjectRef())
 	{
 		// Look for messages in network\Max.log
-		// MAXScript_interface->Log()->LogEntry(SYSLOG_DEBUG, NO_DIALOG, "NifTools Max Plugin", 
+		// MAXScript_interface->Log()->LogEntry(SYSLOG_DEBUG, NO_DIALOG, "NifTools Max Plugin",
 		// 	"Entered DoNotifyNodeUnHide; node is -%s- and class ID is %ld\n", node->GetName(), obj->ClassID().PartA());
 
 	   if (obj->ClassID() == BHKLISTOBJECT_CLASS_ID)
@@ -299,7 +299,7 @@ static void DoNotifyNodeUnHide(void *param, NotifyInfo *info)
 		   for (int i = 0;i < pblock2->Count(PB_MESHLIST); i++)
 		   {
 			   INode *tnode = nullptr;
-			   pblock2->GetValue(PB_MESHLIST,0,tnode,FOREVER,i);	
+			   pblock2->GetValue(PB_MESHLIST,0,tnode,FOREVER,i);
 			   if (tnode != nullptr)
 			   {
 				   tnode->Hide(FALSE);
@@ -317,19 +317,19 @@ static void InitializeHavok()
 	HMODULE hNifHavok = DelayLoadLibraryA("NifMopp.dll");
 	if ( hNifHavok != nullptr )
 	{
-		Niflib::Inertia::SetCalcMassPropertiesBox( 
+		Niflib::Inertia::SetCalcMassPropertiesBox(
 			(Niflib::Inertia::fnCalcMassPropertiesBox)GetProcAddress(hNifHavok, "CalcMassPropertiesBox") );
 
-		Niflib::Inertia::SetCalcMassPropertiesSphere( 
+		Niflib::Inertia::SetCalcMassPropertiesSphere(
 			(Niflib::Inertia::fnCalcMassPropertiesSphere)GetProcAddress(hNifHavok, "CalcMassPropertiesSphere") );
 
-		Niflib::Inertia::SetCalcMassPropertiesCapsule( 
+		Niflib::Inertia::SetCalcMassPropertiesCapsule(
 			(Niflib::Inertia::fnCalcMassPropertiesCapsule)GetProcAddress(hNifHavok, "CalcMassPropertiesCapsule") );
 
-		Niflib::Inertia::SetCalcMassPropertiesPolyhedron( 
+		Niflib::Inertia::SetCalcMassPropertiesPolyhedron(
 			(Niflib::Inertia::fnCalcMassPropertiesPolyhedron)GetProcAddress(hNifHavok, "CalcMassPropertiesPolyhedron") );
 
-		Niflib::Inertia::SetCombineMassProperties( 
+		Niflib::Inertia::SetCombineMassProperties(
 			(Niflib::Inertia::fnCombineMassProperties)GetProcAddress(hNifHavok, "CombineMassProperties") );
 	}
 #endif
@@ -344,21 +344,21 @@ FARPROC WINAPI delayHookFailureFunc(unsigned dliNotify, PDelayLoadInfo pdli)
 {
 	FARPROC fp = NULL;   // Default return value
 						 // NOTE: The members of the DelayLoadInfo structure pointed
-						 // to by pdli shows the results of progress made so far. 
+						 // to by pdli shows the results of progress made so far.
 	switch (dliNotify) {
 
 	case dliFailLoadLib:
 		// LoadLibrary failed.
-		// In here a second attempt could be made to load the dll somehow. 
+		// In here a second attempt could be made to load the dll somehow.
 		// If fp is still NULL, the ERROR_MOD_NOT_FOUND exception will be raised.
 		fp = (FARPROC)DelayLoadLibraryA(pdli->szDll);
 		break;
 
 	case dliFailGetProc:
 		// GetProcAddress failed.
-		// A second attempt could be made to get the function pointer somehow. 
+		// A second attempt could be made to get the function pointer somehow.
 		// We can override and give our own function pointer in fp.
-		// Ofcourse, fp is still going to be NULL, 
+		// Ofcourse, fp is still going to be NULL,
 		// the ERROR_PROC_NOT_FOUND exception will be raised.
 		fp = (FARPROC)NULL;
 		break;
@@ -368,4 +368,4 @@ FARPROC WINAPI delayHookFailureFunc(unsigned dliNotify, PDelayLoadInfo pdli)
 }
 
 // __delayLoadHelper gets the hook function in here:
-PfnDliHook __pfnDliFailureHook2 = delayHookFailureFunc;
+ExternC const PfnDliHook __pfnDliFailureHook2 = delayHookFailureFunc;
