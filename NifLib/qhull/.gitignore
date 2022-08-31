@@ -1,0 +1,75 @@
+# git-ls-files --others --ignored
+# Lines that start with '#' are comments.
+
+# Working files 2015
+# Need to clean up bin/ and build/ for git
+bin/
+src/qhulltest/qhulltest-mini.pro
+src/qhulltest/RoadTest.h.cpp
+
+# Backup and data files
+eg/eg.*
+*~
+*.bak
+*.off
+*.tmp
+*.x
+x.*
+r
+x
+x?
+r?
+
+# patch results
+*.rej
+
+# Build products
+tmp/*
+build-*/
+build/Debug/*
+build/moc/*
+build/qhulltest/*
+build/Release/*
+build/cmake_install.cmake
+build/CMakeCache.txt
+build/CMakeFiles
+build/install_manifest.txt
+build/Makefile*
+build/Testing/*
+build/CTest*
+build/*/Makefile*
+build/*/object_script*
+build/*/Release/*
+build/*/Debug/*
+build/*/MinSizeRel/*
+build/*/RelWithDebInfo/*
+lib/
+*.a
+*.dll
+*.idb
+*.lib
+*.exe
+*.o
+*.md5sum
+
+# Qt files
+*.pro.user
+
+# DevStudio files
+*.bsc
+*.ncb
+*.pdb
+*.suo
+*.user
+*.ilk
+
+# CVS files
+CVS/*
+*/CVS/*
+*/*/CVS/*
+*/*/*/CVS/*
+*.cvsignore
+
+# Other files
+working/
+
