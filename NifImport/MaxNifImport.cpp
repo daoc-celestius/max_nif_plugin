@@ -13,6 +13,7 @@
 #include "stdafx.h"
 #include "MaxNifImport.h"
 #include "KFMImporter.h"
+#include "KFAImporter.h"
 #include "KFImporter.h"
 using namespace Niflib;
 
@@ -93,7 +94,7 @@ MaxNifImport::~MaxNifImport()
 
 int MaxNifImport::ExtCount()
 {
-	return 3;
+	return 4;
 }
 
 const TCHAR *MaxNifImport::Ext(int n)
@@ -196,6 +197,13 @@ int MaxNifImport::DoImport(const TCHAR *filename,ImpInterface *i, Interface *gi,
             return FALSE;
          ok = importer.DoImport();
       }
+	  else if( _tcsicmp( ext, TEXT( ".KFA" ) ) == 0 )
+	  {
+		  KFAImporter importer( filename, i, gi, suppressPrompts );
+		  if( !importer.isValid() )
+			  return FALSE;
+		  ok = importer.DoImport();
+	  }
       else if (_tcsicmp(ext, TEXT(".KF")) == 0)
       {
          KFImporter importer(filename, i, gi, suppressPrompts);

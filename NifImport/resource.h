@@ -4,6 +4,8 @@
 //
 #define IDC_EDIT1                       1003
 #define IDC_EDIT_WELDTHRESH             1003
+#define IDC_KFA_ANIMNODES               1004
+#define IDC_KFA_BROWSE                  1005
 #define IDC_CLOSEBUTTON                 10000
 #define IDS_LIBDESCRIPTION              10001
 #define IDC_EDITHEIGHT                  10001
@@ -23,6 +25,7 @@
 #define IDD_KF_PANEL                    10008
 #define IDC_CHK_LIGHTS                  10008
 #define IDC_CHK_UPB                     10009
+#define IDD_KFA_PANEL                   10009
 #define IDC_CHK_COLL                    10010
 #define IDC_LBL_LINK                    10011
 #define IDC_CHK_VCOLORS                 10012
@@ -52,9 +55,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        101
+#define _APS_NEXT_RESOURCE_VALUE        102
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1004
+#define _APS_NEXT_CONTROL_VALUE         1006
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

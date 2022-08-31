@@ -28,8 +28,6 @@ namespace Niflib
 	class NiTextKeyExtraData;
 }
 
-class AnimationImport;
-
 // NIF Importer
 class NifImporter : public BaseImporter, IFileResolver//, public IniFileSection
 {
@@ -204,8 +202,6 @@ public:
 
 	// Animation Helpers
 	bool ImportAnimation();
-	void FindBoneNode( AnimationImport& ai, INode* pNode, const std::map< std::wstring, NiKeyframeControllerRef >& animNodes );
-	bool ImportAnimationBones( AnimationImport& ai );
 	void ClearAnimation();
 	void ClearAnimation(INode *node);
 	bool AddNoteTracks(float time, string name, string target, Ref<NiTextKeyExtraData> textKeyData, bool loop);

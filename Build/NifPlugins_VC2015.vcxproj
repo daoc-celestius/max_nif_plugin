@@ -1261,6 +1261,7 @@
     <ClInclude Include="..\NifFurniture\NifFurniture.h" />
     <ClInclude Include="..\NifFurniture\resource.h" />
     <ClInclude Include="..\NifImport\BaseImporter.h" />
+    <ClInclude Include="..\NifImport\KFAImporter.h" />
     <ClInclude Include="..\NifImport\KFImporter.h" />
     <ClInclude Include="..\NifImport\KFMImporter.h" />
     <ClInclude Include="..\NifImport\MaxNifImport.h" />
@@ -1542,6 +1543,8 @@
     <ClCompile Include="..\NifImport\ImportMtlAndTex.cpp" />
     <ClCompile Include="..\NifImport\ImportParticles.cpp" />
     <ClCompile Include="..\NifImport\ImportSkeleton.cpp" />
+    <ClCompile Include="..\NifImport\KFADialog.cpp" />
+    <ClCompile Include="..\NifImport\KFAImporter.cpp" />
     <ClCompile Include="..\NifImport\KfDialog.cpp" />
     <ClCompile Include="..\NifImport\KFImporter.cpp" />
     <ClCompile Include="..\NifImport\KFMImporter.cpp" />

@@ -201,6 +201,9 @@
     <ClInclude Include="..\NifProps\MaterialFile.h">
       <Filter>NifProps\Core</Filter>
     </ClInclude>
+    <ClInclude Include="..\NifImport\KFAImporter.h">
+      <Filter>NifImport\Importer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\NifProps\nifProps.cpp">
@@ -367,6 +370,12 @@
     </ClCompile>
     <ClCompile Include="..\NifProps\MaterialFile.cpp">
       <Filter>NifProps\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\NifImport\KFAImporter.cpp">
+      <Filter>NifImport\Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\NifImport\KFADialog.cpp">
+      <Filter>NifImport\Importer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
