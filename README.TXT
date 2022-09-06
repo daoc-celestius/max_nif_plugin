@@ -1,4 +1,4 @@
-                        MaxPlugins 3.8
+                        MaxPlugins 3.9
                         ================
 
     ATTENTION:
