@@ -23,6 +23,10 @@ HISTORY:
 #include <obj/BSSkin__Instance.h>
 #include <obj/BSSkin__BoneData.h>
 #include <obj/BSSubIndexTriShape.h>
+#include <obj/NiStringsExtraData.h>
+
+#include <codecvt>
+#include <locale>
 
 using namespace Niflib;
 
@@ -764,7 +768,7 @@ bool NifImporter::ImportSkin(ImpNode *node, NiTriBasedGeomRef triGeom, int v_sta
 	if (ISkin *skin = (ISkin *)skinMod->GetInterface(I_SKIN)) {
 		ISkinImportData* iskinImport = (ISkinImportData*)skinMod->GetInterface(I_SKINIMPORTDATA);
 
-		// Set the num weights to 4.  Yes its in the nif but Shon doesn't like to expose those values 
+		// Set the num weights to 4.  Yes its in the nif but Shon doesn't like to expose those values
 		//   and the value always seems to be 4 anyway.  I'd also this be more dynamic than hard coded numbers
 		//   but I cant figure out the correct values to pass the scripting engine from here so I'm giving up.
 		int numWeightsPerVertex = 4;
@@ -789,17 +793,72 @@ bool NifImporter::ImportSkin(ImpNode *node, NiTriBasedGeomRef triGeom, int v_sta
 		iskinImport->SetSkinTm(tnode, nm3, nm3); // ???
 		// Create Bone List
 		Tab<INode*> bones;
-		for (size_t i = 0; i < nifBones.size(); ++i) {
-			NiNodeRef bone = nifBones[i];
-			if (INode *boneRef = FindNode(bone)) {
-				bones.Append(1, &boneRef);
-				iskinImport->AddBoneEx(boneRef, TRUE);
+		if( IsDAoC() )
+		{
+			const std::list< NiExtraDataRef > extraDataList = triGeom->GetExtraData();
+			std::list< NiExtraDataRef >::const_iterator baseExtraDataIt = extraDataList.begin();
+			if( baseExtraDataIt == extraDataList.end() )
+			{
+				return false;
+			}
 
-				//// Set Bone Transform
-				Matrix3 b3 = TOMATRIX3(data->GetBoneTransform(i));
-				Matrix3 ib3 = Inverse(b3);
-				ib3 *= geom;
-				iskinImport->SetBoneTm(boneRef, ib3, ib3);
+			NiExtraDataRef baseExtraData = *baseExtraDataIt;
+			if( baseExtraData )
+			{
+				NiStringsExtraDataRef extraData = DynamicCast< NiStringsExtraData >( baseExtraData );
+
+				INode* pRootNode = gi->GetRootNode();
+				if( pRootNode == nullptr )
+				{
+					return false;
+				}
+
+				const std::vector< std::string > boneNames = extraData->GetData();
+
+				std::map< std::wstring, INode* > boneNodes;
+				for( std::string boneName : boneNames )
+				{
+					const std::wstring wname = std::wstring_convert< std::codecvt_utf8<wchar_t> >().from_bytes( boneName );
+					boneNodes[ wname ] = nullptr;
+				}
+
+				FillBoneNodes( pRootNode, boneNodes );
+
+				for( size_t i = 0u; i < extraData->GetData().size(); ++i )
+				{
+					const std::string& boneName = boneNames[ i ];
+					const std::wstring wname = std::wstring_convert< std::codecvt_utf8<wchar_t> >().from_bytes( boneName );
+					INode* pNode = boneNodes[ wname ];
+					if( pNode == nullptr )
+					{
+						return false;
+					}
+
+					bones.Append( 1, &pNode );
+					iskinImport->AddBoneEx( pNode, TRUE );
+
+					//// Set Bone Transform
+					Matrix3 b3 = TOMATRIX3( data->GetBoneTransform( i ) );
+					Matrix3 ib3 = Inverse( b3 );
+					ib3 *= geom;
+					iskinImport->SetBoneTm( pNode, ib3, ib3 );
+				}
+			}
+		}
+		else
+		{
+			for (size_t i = 0; i < nifBones.size(); ++i) {
+				NiNodeRef bone = nifBones[i];
+				if (INode *boneRef = FindNode(bone)) {
+					bones.Append(1, &boneRef);
+					iskinImport->AddBoneEx(boneRef, TRUE);
+
+					//// Set Bone Transform
+					Matrix3 b3 = TOMATRIX3(data->GetBoneTransform(i));
+					Matrix3 ib3 = Inverse(b3);
+					ib3 *= geom;
+					iskinImport->SetBoneTm(boneRef, ib3, ib3);
+				}
 			}
 		}
 		if (bones.Count() != data->GetBoneCount())
@@ -830,7 +889,7 @@ bool NifImporter::ImportSkin(ImpNode *node, NiTriBasedGeomRef triGeom, int v_sta
 		gi->SetCommandPanelTaskMode(TASK_MODE_MODIFY);
 		gi->SelectNode(tnode);
 #endif
-		// Assign the weights 
+		// Assign the weights
 		for (vector<VertexHolder>::iterator itr = vertexHolders.begin(), end = vertexHolders.end(); itr != end; ++itr) {
 			VertexHolder& h = (*itr);
 			if (h.count) {
@@ -919,7 +978,7 @@ bool NifImporter::ImportSkin(ImpNode *node, Niflib::BSTriShapeRef shape, int v_s
 {
 	USES_CONVERSION;
 	bool ok = true;
-	
+
 	if (!shape->HasSkin())
 		return false;
 
@@ -942,7 +1001,7 @@ bool NifImporter::ImportSkin(ImpNode *node, Niflib::BSTriShapeRef shape, int v_s
 	if (ISkin *skin = (ISkin *)skinMod->GetInterface(I_SKIN)) {
 		ISkinImportData* iskinImport = (ISkinImportData*)skinMod->GetInterface(I_SKINIMPORTDATA);
 
-		// Set the num weights to 4.  Yes its in the nif but Shon doesn't like to expose those values 
+		// Set the num weights to 4.  Yes its in the nif but Shon doesn't like to expose those values
 		//   and the value always seems to be 4 anyway.  I'd also this be more dynamic than hard coded numbers
 		//   but I cant figure out the correct values to pass the scripting engine from here so I'm giving up.
 		int numWeightsPerVertex = 4;
@@ -1010,7 +1069,7 @@ bool NifImporter::ImportSkin(ImpNode *node, Niflib::BSTriShapeRef shape, int v_s
 		gi->SetCommandPanelTaskMode(TASK_MODE_MODIFY);
 		gi->SelectNode(tnode);
 #endif
-		// Assign the weights 
+		// Assign the weights
 		for (vector<VertexHolder>::iterator itr = vertexHolders.begin(), end = vertexHolders.end(); itr != end; ++itr) {
 			VertexHolder& h = (*itr);
 			if (h.count) {
@@ -1132,6 +1191,21 @@ bool NifImporter::ImportSkin(ImpNode *node, Niflib::BSTriShapeRef shape, int v_s
 	return ok;
 }
 
+void NifImporter::FillBoneNodes( INode* pNode, std::map< std::wstring, INode* >& bones )
+{
+	const std::wstring nodeName = pNode->GetName();
+	const std::map< std::wstring, INode* >::iterator it = bones.find( nodeName );
+	if( it != bones.end() )
+	{
+		it->second = pNode;
+	}
+
+	for( int i = 0u; i < pNode->NumberOfChildren(); ++i )
+	{
+		INode* pChildNode = pNode->GetChildNode( i );
+		FillBoneNodes( pChildNode, bones );
+	}
+}
 
 void NifImporter::WeldVertices(Mesh& mesh)
 {

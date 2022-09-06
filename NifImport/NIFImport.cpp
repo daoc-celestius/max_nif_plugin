@@ -578,6 +578,11 @@ bool NifImporter::DoImport()
 	ImportAnimation();
 	return true;
 }
+
+bool NifImporter::IsDAoC() const
+{
+	return (nifVersion == 0x0a010000 && userVersion == 0);
+}
 bool NifImporter::IsSkyrim() const {
 	return (nifVersion == 0x14020007 && userVersion == 12 && userVersion2 < 130);
 }

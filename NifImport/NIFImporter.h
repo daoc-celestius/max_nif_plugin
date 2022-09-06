@@ -155,6 +155,7 @@ public:
 	bool ImportVertexColor(INode *tnode, TriObject *o, vector<Niflib::Triangle>& tris, vector<Niflib::Color4> cv, int cv_offset = 0);
 	bool ImportSkin(ImpNode *node, Niflib::NiTriBasedGeomRef triGeom, int v_start = 0);
 	bool ImportSkin(ImpNode *node, Niflib::BSTriShapeRef shape, int v_start = 0);
+	void FillBoneNodes( INode* pNode, std::map< std::wstring, INode* >& bones );
 
 	bool ImportSpecialNodes();
 	bool ImportParticleSystems(Niflib::NiNodeRef root);
@@ -217,6 +218,7 @@ public:
 
 	void WeldVertices(Mesh& mesh);
 
+	bool IsDAoC() const;
 	bool IsSkyrim() const;
 	bool IsFallout3() const;
 	bool IsFallout4() const;
