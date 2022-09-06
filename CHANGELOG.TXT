@@ -3,6 +3,13 @@ NifTools MaxPlugin
 
     Change log
     ----------
+	  3.9
+	o All
+	  - Switched to Visual Studio 2017 VC++ Compiler
+	o Importer
+	  - Add support for DAoC KFA files
+	  - Fix import of DAoC bone mapping
+	
 	  3.8
 	o All
 	  - Switched to Visual Studio 2015 VC++ Compiler
