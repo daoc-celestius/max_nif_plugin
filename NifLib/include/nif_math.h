@@ -1206,6 +1206,8 @@ struct Quaternion {
 	* direction but with a magnitude, or length, of 1.
 	*/
 	NIFLIB_API Quaternion Normalized() const;
+
+	NIFLIB_API Quaternion Negate() const;
 };
 
 

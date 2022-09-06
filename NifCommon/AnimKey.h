@@ -6,7 +6,7 @@ DESCRIPTION:	Animation Key Import Routines
 
 CREATED BY: tazpn (Theo)
 
-HISTORY: 
+HISTORY:
 
 *>	Copyright (c) 2006, All Rights Reserved.
 **********************************************************************/
@@ -190,7 +190,7 @@ inline void MergeKeys(Control *subCtrl, vector<U>& keys, float time)
                MergeKey(ikeys, MapKey<T>(keys[i], time));
             }
             ikeys->SortKeys();
-         }        
+         }
       }
    }
 }

@@ -793,15 +793,12 @@ bool NifImporter::ImportSkin(ImpNode *node, NiTriBasedGeomRef triGeom, int v_sta
 		iskinImport->SetSkinTm(tnode, nm3, nm3); // ???
 		// Create Bone List
 		Tab<INode*> bones;
-		if( IsDAoC() )
-		{
-			const std::list< NiExtraDataRef > extraDataList = triGeom->GetExtraData();
-			std::list< NiExtraDataRef >::const_iterator baseExtraDataIt = extraDataList.begin();
-			if( baseExtraDataIt == extraDataList.end() )
-			{
-				return false;
-			}
 
+		const std::list< NiExtraDataRef > extraDataList = triGeom->GetExtraData();
+		std::list< NiExtraDataRef >::const_iterator baseExtraDataIt = extraDataList.begin();
+		if( IsDAoC() &&
+			baseExtraDataIt != extraDataList.end() )
+		{
 			NiExtraDataRef baseExtraData = *baseExtraDataIt;
 			if( baseExtraData )
 			{

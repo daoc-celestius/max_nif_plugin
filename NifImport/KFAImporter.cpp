@@ -352,16 +352,18 @@ bool KFAImporter::ImportAnimation()
 
 		const size_t index = (size_t)std::stoi( extraData->GetData() );
 		const std::map< size_t, std::wstring >::const_iterator it = animNodeIndices.find( index );
-		if( it != animNodeIndices.end() )
+		if( it == animNodeIndices.end() )
 		{
-			const NiKeyframeControllerRef keyframeController = DynamicCast< NiKeyframeController >( *controllerIterator );
-			if( !keyframeController )
-			{
-				continue;
-			}
-
-			animNodes[ it->second ] = keyframeController;
+			continue;
 		}
+
+		const NiKeyframeControllerRef keyframeController = DynamicCast< NiKeyframeController >( *controllerIterator );
+		if( !keyframeController )
+		{
+			continue;
+		}
+
+		animNodes[ it->second ] = keyframeController;
 	}
 
 	ApplyBoneValues( pRootNode, animNodes );
