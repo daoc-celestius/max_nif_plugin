@@ -581,6 +581,7 @@ bool NifImporter::DoImport()
 
 bool NifImporter::IsDAoC() const
 {
+	return true;
 	return (nifVersion == 0x0a010000 && userVersion == 0);
 }
 bool NifImporter::IsSkyrim() const {

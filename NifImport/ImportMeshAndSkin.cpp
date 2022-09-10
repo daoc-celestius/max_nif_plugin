@@ -795,51 +795,53 @@ bool NifImporter::ImportSkin(ImpNode *node, NiTriBasedGeomRef triGeom, int v_sta
 		Tab<INode*> bones;
 
 		const std::list< NiExtraDataRef > extraDataList = triGeom->GetExtraData();
-		std::list< NiExtraDataRef >::const_iterator baseExtraDataIt = extraDataList.begin();
-		if( IsDAoC() &&
-			baseExtraDataIt != extraDataList.end() )
+		NiStringsExtraDataRef extraData;
+		
+		for (NiExtraDataRef ref : extraDataList)
 		{
-			NiExtraDataRef baseExtraData = *baseExtraDataIt;
-			if( baseExtraData )
+			if (DynamicCast<NiStringsExtraData>(ref))
 			{
-				NiStringsExtraDataRef extraData = DynamicCast< NiStringsExtraData >( baseExtraData );
+				extraData = ref;
+			}
+		}
+		
+		if( IsDAoC() && extraData)
+		{
+			INode* pRootNode = gi->GetRootNode();
+			if( pRootNode == nullptr )
+			{
+				return false;
+			}
 
-				INode* pRootNode = gi->GetRootNode();
-				if( pRootNode == nullptr )
+			const std::vector< std::string > boneNames = extraData->GetData();
+
+			std::map< std::wstring, INode* > boneNodes;
+			for( std::string boneName : boneNames )
+			{
+				const std::wstring wname = std::wstring_convert< std::codecvt_utf8<wchar_t> >().from_bytes( boneName );
+				boneNodes[ wname ] = nullptr;
+			}
+
+			FillBoneNodes( pRootNode, boneNodes );
+
+			for( size_t i = 0u; i < extraData->GetData().size(); ++i )
+			{
+				const std::string& boneName = boneNames[ i ];
+				const std::wstring wname = std::wstring_convert< std::codecvt_utf8<wchar_t> >().from_bytes( boneName );
+				INode* pNode = boneNodes[ wname ];
+				if( pNode == nullptr )
 				{
 					return false;
 				}
 
-				const std::vector< std::string > boneNames = extraData->GetData();
+				bones.Append( 1, &pNode );
+				iskinImport->AddBoneEx( pNode, TRUE );
 
-				std::map< std::wstring, INode* > boneNodes;
-				for( std::string boneName : boneNames )
-				{
-					const std::wstring wname = std::wstring_convert< std::codecvt_utf8<wchar_t> >().from_bytes( boneName );
-					boneNodes[ wname ] = nullptr;
-				}
-
-				FillBoneNodes( pRootNode, boneNodes );
-
-				for( size_t i = 0u; i < extraData->GetData().size(); ++i )
-				{
-					const std::string& boneName = boneNames[ i ];
-					const std::wstring wname = std::wstring_convert< std::codecvt_utf8<wchar_t> >().from_bytes( boneName );
-					INode* pNode = boneNodes[ wname ];
-					if( pNode == nullptr )
-					{
-						return false;
-					}
-
-					bones.Append( 1, &pNode );
-					iskinImport->AddBoneEx( pNode, TRUE );
-
-					//// Set Bone Transform
-					Matrix3 b3 = TOMATRIX3( data->GetBoneTransform( i ) );
-					Matrix3 ib3 = Inverse( b3 );
-					ib3 *= geom;
-					iskinImport->SetBoneTm( pNode, ib3, ib3 );
-				}
+				//// Set Bone Transform
+				Matrix3 b3 = TOMATRIX3( data->GetBoneTransform( i ) );
+				Matrix3 ib3 = Inverse( b3 );
+				ib3 *= geom;
+				iskinImport->SetBoneTm( pNode, ib3, ib3 );
 			}
 		}
 		else
